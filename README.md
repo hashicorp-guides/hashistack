@@ -2,7 +2,7 @@
 
 ## Please see the documentation for the [hashistack-aws](https://github.com/hashicorp-modules/hashistack-aws) repository.
 
-### Limitations noted in the the [hashistack-aws](https://github.com/hashicorp-modules/hashistack-aws) repo
+### Limitations noted in the the [hashistack-aws](https://github.com/hashicorp-modules/hashistack-aws) repository
 - **This repository is currently being tested.**
 - Vault is not configured to use TLS, please provide a set of certificates. It is strongly discouraged to use Vault without TLS.
 - Vault is not initialized as the key shards need to be distributed to key holders, and it is suggested to encrypt them with GPG. Please refer to the [Vault documentation](https://www.vaultproject.io/docs/internals/architecture.html).
