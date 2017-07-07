@@ -44,3 +44,57 @@ variable "region" {
   default     = "us-west-1"
   description = "Region to deploy consul cluster ie us-west-1"
 }
+
+## Outputs
+
+# network-aws outputs
+output "vpc_id" {
+  value = "${module.network-aws.vpc_id}"
+}
+
+output "subnet_public_ids" {
+  value = ["${module.network-aws.subnet_public_ids}"]
+}
+
+output "subnet_private_ids" {
+  value = ["${module.network-aws.subnet_private_ids}"]
+}
+
+output "security_group_egress_id" {
+  value = "${module.network-aws.security_group_egress_id}"
+}
+
+output "security_group_bastion_id" {
+  value = "${module.network-aws.security_group_bastion_id}"
+}
+
+output "bastion_username" {
+  value = "${module.network-aws.bastion_username}"
+}
+
+output "bastion_ips_public" {
+  value = ["${module.network-aws.bastion_ips_public}"]
+}
+
+# hashistack-aws outputs
+output "hashistack_autoscaling_group_id" {
+  value = "${module.hashistack-aws.asg_id}"
+}
+
+output "consul_client_sg_id" {
+  value = "${module.hashistack-aws.consul_client_sg_id}"
+}
+
+output "hashistack_server_sg_id" {
+  value = "${module.hashistack-aws.hashistack_server_sg_id}"
+}
+
+# ssh-keypair-aws outputs
+# private key output for use only if desired
+#output "private_key_data" {
+#  value = "${module.ssh-keypair-aws.private_key_data}"
+#}
+
+output "ssh_key_name" {
+  value = "${module.ssh-keypair-aws.ssh_key_name}"
+}
