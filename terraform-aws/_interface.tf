@@ -90,7 +90,7 @@ output "hashistack_server_sg_id" {
 }
 
 # ssh-keypair-aws outputs
-# private key output for use only if desired
+# Uncomment below to output private key contents
 #output "private_key_data" {
 #  value = "${module.ssh-keypair-aws.private_key_data}"
 #}
