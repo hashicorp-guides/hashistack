@@ -13,7 +13,7 @@ module "network-aws" {
 }
 
 module "hashistack-aws" {
-  source           = "git::ssh://git@github.com/hashicorp-modules/hashistack-aws.git"
+  source           = "git::ssh://git@github.com/hashicorp-modules/hashistack-aws.git?ref=no-images-aws"
   region           = "${var.region}"
   environment_name = "${random_id.environment_name.hex}"
   cluster_name     = "${random_id.environment_name.hex}"
