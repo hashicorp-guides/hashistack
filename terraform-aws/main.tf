@@ -5,7 +5,7 @@ resource "random_id" "environment_name" {
 }
 
 module "network-aws" {
-  source           = "git@github.com:hashicorp-modules/network-aws.git"
+  source           = "github.com/hashicorp-modules/network-aws?ref=0.1.0"
   environment_name = "${random_id.environment_name.hex}"
   os               = "${var.os}"
   os_version       = "${var.os_version}"
@@ -13,8 +13,7 @@ module "network-aws" {
 }
 
 module "hashistack-aws" {
-  source           = "git::ssh://git@github.com/hashicorp-modules/hashistack-aws.git"
-  region           = "${var.region}"
+  source           = "github.com/hashicorp-modules/hashistack-aws?ref=0.1.0"
   environment_name = "${random_id.environment_name.hex}"
   cluster_name     = "${random_id.environment_name.hex}"
   cluster_size     = "${var.cluster_size}"
@@ -29,6 +28,6 @@ module "hashistack-aws" {
 }
 
 module "ssh-keypair-aws" {
-  source       = "git@github.com:hashicorp-modules/ssh-keypair-aws.git"
+  source       = "github.com/hashicorp-modules/ssh-keypair-aws?ref=0.1.0"
   ssh_key_name = "${random_id.environment_name.hex}"
 }

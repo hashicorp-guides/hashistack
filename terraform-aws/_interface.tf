@@ -4,17 +4,6 @@ variable "environment_name_prefix" {
   description = "Environment Name prefix eg my-hashistack-env"
 }
 
-# Required variables for hashistack-aws config
-variable "os" {
-  # case sensitive for AMI lookup
-  description = "Operating System to use ie RHEL or Ubuntu"
-}
-
-variable "os_version" {
-  description = "Operating System version to use ie 7.3 (for RHEL) or 16.04 (for Ubuntu)"
-}
-
-# Optional variables for the hashistack-aws repo
 variable "cluster_size" {
   default     = "3"
   description = "Number of instances to launch in the cluster"
@@ -40,14 +29,18 @@ variable "instance_type" {
   description = "AWS instance type to use eg m4.large"
 }
 
-variable "region" {
-  default     = "us-west-1"
-  description = "Region to deploy consul cluster ie us-west-1"
+variable "os" {
+  # case sensitive for AMI lookup
+  default     = "RHEL"
+  description = "Operating System to use ie RHEL or Ubuntu"
+}
+
+variable "os_version" {
+  default     = "7.3"
+  description = "Operating System version to use ie 7.3 (for RHEL) or 16.04 (for Ubuntu)"
 }
 
 ## Outputs
-
-# network-aws outputs
 output "vpc_id" {
   value = "${module.network-aws.vpc_id}"
 }
@@ -76,7 +69,6 @@ output "bastion_ips_public" {
   value = ["${module.network-aws.bastion_ips_public}"]
 }
 
-# hashistack-aws outputs
 output "hashistack_autoscaling_group_id" {
   value = "${module.hashistack-aws.asg_id}"
 }
@@ -88,12 +80,6 @@ output "consul_client_sg_id" {
 output "hashistack_server_sg_id" {
   value = "${module.hashistack-aws.hashistack_server_sg_id}"
 }
-
-# ssh-keypair-aws outputs
-# Uncomment below to output private key contents
-#output "private_key_data" {
-#  value = "${module.ssh-keypair-aws.private_key_data}"
-#}
 
 output "ssh_key_name" {
   value = "${module.ssh-keypair-aws.ssh_key_name}"
