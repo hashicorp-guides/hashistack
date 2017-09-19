@@ -88,3 +88,7 @@ output "hashistack_server_sg_id" {
 output "ssh_key_name" {
   value = "${module.ssh-keypair-aws.ssh_key_name}"
 }
+
+output "private_key_data" {
+  value = "${module.ssh-keypair-aws.private_key_data}"
+}
