@@ -9,6 +9,10 @@ variable "cluster_size" {
   description = "Number of instances to launch in the cluster"
 }
 
+variable "aws_region" {
+  description = "Region where resources will be provisioned"
+}
+
 variable "consul_version" {
   default     = "0.8.4"
   description = "Consul version to use ie 0.8.4"
