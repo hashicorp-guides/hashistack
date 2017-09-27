@@ -2,7 +2,7 @@
 set -x
 exec > >(tee /var/log/user-data.log|logger -t user-data ) 2>&1
 
-local_ipv4="$(echo -e `hostname -I` | tr -d '[:space:]')"
+local_ipv4="$(echo -e `hostname -I` |awk '{print $1}' | tr -d '[:space:]')"
 
 # stop consul so it can be configured correctly
 systemctl stop consul
