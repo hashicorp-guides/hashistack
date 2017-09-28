@@ -1,11 +1,13 @@
-# Consul on Azure
-This guide provides a basic deployment of a Consul cluster in Azure. This is a high-level overview of the environment that is created:
+# The HashiCorp Stack on Azure
+This guide provides a basic deployment of a HashiCorp stack on Azure. This is a high-level overview of the environment that is created:
 
 * Creates a Resource Group to contain all resources created by this guide
 * Creates a virtual network, one public subnet, and three private subnets
-* Creates a publically-accessible jumphost for SSH access in the public subnet
-* Creates one virtual machine in each private subnet using a custom managed image with Consul installed and configured
-* Uses Consul's cloud auto-join to connect the three instances into one Consul cluster
+* Creates a publicly-accessible jumphost for SSH access in the public subnet
+* Creates one virtual machine in each private subnet using a custom managed image with Consul, Vault, and Nomad (enterprise or OSS versions) installed and configured (See note below.)
+* Uses Consul's cloud auto-join to connect the three instances into one Consul cluster.
+
+**Note:** Software version numbers and type (enterprise or OSS) depend on which Packer template and procedure you use. You can find the procedure and templates in the [packer-templates](https://github.com/hashicorp-modules/packer-templates/tree/chad_hashistack_azure/hashistack) repo.
 
 ## Deployment Prerequisites
 
@@ -17,13 +19,17 @@ This guide provides a basic deployment of a Consul cluster in Azure. This is a h
     * [https://www.terraform.io/docs/providers/azurerm/index.html]()
     * The above steps will create a Service Principal with the [Contributor](https://docs.microsoft.com/en-us/azure/active-directory/role-based-access-built-in-roles#contributor) role in your Azure subscription
 
-4. `export` environment variables for the main (Packer/Terraform) Service Principal. For example, create a `.sh` file with the following values (obtained from step `1` above):
+4. `export` environment variables for the main (Packer/Terraform) Service Principal. For example, create an `env.sh` file with the following values (obtained from step `1` above):
 
     ```
-    export ARM_SUBSCRIPTION_ID="xxxxxxxx-yyyy-zzzz-xxxx-yyyyyyyyyyyy"
-    export ARM_CLIENT_ID="xxxxxxxx-yyyy-zzzz-xxxx-yyyyyyyyyyyy"
-    export ARM_CLIENT_SECRET="xxxxxxxx-yyyy-zzzz-xxxx-yyyyyyyyyyyy"
-    export ARM_TENANT_ID="xxxxxxxx-yyyy-zzzz-xxxx-yyyyyyyyyyyy"
+    # Exporting variables in both cases just in case, no pun intended
+    export ARM_SUBSCRIPTION_ID="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+    export ARM_CLIENT_ID="bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+    export ARM_CLIENT_SECRET="cccccccc-cccc-cccc-cccc-cccccccccccc"
+    export ARM_TENANT_ID="dddddddd-dddd-dddd-dddd-dddddddddddd"
+    export subscription_id="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+    export client_id="bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+    export client_secret="cccccccc-cccc-cccc-cccc-cccccccccccc"
     ```
 
 5. Finally, create a read-only Azure Service Principal (using the Azure CLI) that will be used to perform the Consul auto-join (make note of these values as you will use them later in this guide):
@@ -40,45 +46,37 @@ Once you've created the appropriate API credentials for Packer/Terraform, you wi
 
 First, you will need to create a Resource Group in your Azure subscription in which to store the managed images. In the example below, we've used `"PackerImages"`. If you use a different name, make sure to use the new resource group when running the Packer template (e.g. `AZURE_RESOURCE_GROUP="PackerImages"`)
 
+
+
 On your client machine:
 
 1. Install Packer. See [https://www.packer.io/docs/install/index.html]() for more details.
 
-2. `git clone` the `tdsacilowski/azure-consul` repository
+2. `git clone` the [hashicorp-modules/packer-templates](https://github.com/hashicorp-modules/packer-templates/tree/chad_hashistack_azure) repository
 
-3. Run the `azure-consul/packer/consul/consul.json` template:
-
-    ```
-    $ cd packer/consul
-
-    # Validate the Packer template
-    $ AZURE_RESOURCE_GROUP="PackerImages" AZURE_LOCATION="West US" PACKER_ENVIRONMENT="dev" CONSUL_VERSION="0.9.2" packer validate consul.json
-
-    # Build the templates
-    $ AZURE_RESOURCE_GROUP="PackerImages" AZURE_LOCATION="West US" PACKER_ENVIRONMENT="dev" CONSUL_VERSION="0.9.2" packer build consul.json
-    ```
+3. Follow the instructions for [building images locally](https://github.com/hashicorp-modules/packer-templates/blob/chad_hashistack_azure/README.md#building-hashistack-images-locally-outside-of-the-ci-pipeline) in the [packer-templates README file](https://github.com/hashicorp-modules/packer-templates/blob/chad_hashistack_azure/README.md). Please note that default installation will be OSS binaries unless you supply correct AWS credentials to download enterprise binaries from the appropriate S3 bucket.
 
 4. Once the Packer build process is complete, you can output the resource ID for the new image using the Azure CLI:
 
     ```
-    $ az image list --query "[?tags.Product=='Consul'].id"
+    $ az image list --query "[?tags.Product=='HashiStack'].id"
 
     [
-      "/subscriptions/xxxxxxxx-yyyy-zzzz-0000-123456789xyz/resourceGroups/PACKERIMAGES/providers/Microsoft.Compute/images/dev-consul-server-0.9.2-Ubuntu_16.04"
+      "/subscriptions/xxxxxxxx-yyyy-zzzz-0000-123456789xyz/resourceGroups/PACKERIMAGES/providers/Microsoft.Compute/images/dev-hashistack-server-ent-Ubuntu_16.04-1234567890"
     ]
     ```
 
     Make note of this resource ID as you will use this in your Terraform template as described below.
 
-### Deploy the Consul Cluster
+### Deploy the HashiStack Cluster
 
 Once the Packer image creation process is complete, you can begin the process of deploying the remainder of this guide to create a Consul cluster in your Azure subscription.
 
-1. `cd` into the `azure-consul/terraform` directory
+1. `cd` into the `hashistack-azure` directory
 
 2. At this point, you will need to customize the `terraform.tfvars` with your specific values. There's a `terraform.tfvars.example` file provided. Update the appropriate values:
 
-    * `custom_image_id` will be the Azure managed image resource ID that you queried for in the previous section (e.g. `"/subscriptions/xxxxxxxx-yyyy-zzzz-0000-123456789xyz/resourceGroups/PACKERIMAGES/providers/Microsoft.Compute/images/dev-consul-server-0.9.2-Ubuntu_16.04"`)
+    * `custom_image_id` will be the Azure managed image resource ID that you queried for in the previous section (e.g. `"/subscriptions/xxxxxxxx-yyyy-zzzz-0000-123456789xyz/resourceGroups/PACKERIMAGES/providers/Microsoft.Compute/images/dev-hashistack-server-ent-Ubuntu_16.04-1234567890"`)
 
     * `auto_join_subscription_id`, `auto_join_client_id`, `auto_join_client_secret`, `auto_join_tenant_id` will use the values obtained from creating the read-only auto-join Service Principal created in step #5 of the Deployment Prerequisites earlier.
 
@@ -86,7 +84,7 @@ Once the Packer image creation process is complete, you can begin the process of
 
 4. Run `terraform plan` to verify deployment steps and validate all modules
 
-5. Finally, run `terraform apply` to deploy the Consul cluster
+5. Finally, run `terraform apply` to deploy the HashiStack cluster
 
 ### Verify Deployment
 
@@ -102,7 +100,7 @@ consul_private_ips = [
 ]
 ```
 
-* Once logged into any one of your Consul servers, run `consul members` to view the status of the cluster:
+* Once logged into any one of your Consul servers, run `consul members` or `vault status` to view the status of the clusters:
 
 ```
 $ consul members
@@ -111,4 +109,13 @@ Node             Address           Status  Type    Build  Protocol  DC
 consul-westus-0  172.31.48.4:8301  alive   server  0.9.2  2         dc1
 consul-westus-1  172.31.64.4:8301  alive   server  0.9.2  2         dc1
 consul-westus-2  172.31.80.4:8301  alive   server  0.9.2  2         dc1
+
+$ vault status
+```
+
+* To access the UIs for Consul and Vault on http://localhost:<port>, respectively, you can create the following SSH tunnels from your machine after adding the key to your keychain/identity (above):
+
+```
+$ ssh -L 8200:<vault node private ip>:8200 azure-user@<jump host public ip>
+$ ssh -L 8500:<consul node private ip>:8500 azure-user@<jump host public ip>
 ```
