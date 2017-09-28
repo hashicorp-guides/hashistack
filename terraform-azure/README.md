@@ -113,9 +113,11 @@ consul-westus-2  172.31.80.4:8301  alive   server  0.9.2  2         dc1
 $ vault status
 ```
 
-* To access the UIs for Consul and Vault on http://localhost:<port>, respectively, you can create the following SSH tunnels from your machine after adding the key to your keychain/identity (above):
+* To access the UIs for Consul and Vault (on http://localhost:<port>) respectively, you can create the following SSH tunnels from your machine after adding the key to your keychain/identity (above):
 
 ```
 $ ssh -L 8200:<vault node private ip>:8200 azure-user@<jump host public ip>
 $ ssh -L 8500:<consul node private ip>:8500 azure-user@<jump host public ip>
 ```
+
+**Credits:* Nico Corrarello and Teddy Sacilowski
