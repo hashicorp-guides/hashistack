@@ -29,6 +29,7 @@ module "hashistack-aws" {
   consul_version   = "${var.consul_version}"
   vault_version    = "${var.vault_version}"
   nomad_version    = "${var.nomad_version}"
+  instance_type    = "${var.instance_type}"
 }
 
 module "ssh-keypair-aws" {
