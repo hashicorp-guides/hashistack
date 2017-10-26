@@ -37,7 +37,7 @@
   ```
   $ ssh -i hashistack-r4nd0m456.pem -L 8200:<hashistack node private ip>:8200 azure-user@<jump host public ip>
   $ ssh -i hashistack-r4nd0m456.pem -L 8500:<hashistack node private ip>:8500 azure-user@<jump host public ip>
-  ``
+  ````
 
 **Note:** I'm outputting the contents of the private key for use (copy/paste) when running on TFE. Comment it out if you want to suppress the output.
 
