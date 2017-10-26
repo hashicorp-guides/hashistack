@@ -9,7 +9,5 @@ os = "RHEL"
 # os_version = "16.04"
 os_version = "7.3"
 
-# Product versions to use (requires matching AMI)
-consul_version = "0.9.2+ent"
-nomad_version  = "0.6.0"
-vault_version  = "0.8.0+ent"
+# AWS Region
+aws_region = "us-east-1"
