@@ -17,7 +17,7 @@ module "network-aws" {
 }
 
 module "hashistack-aws" {
-  source           = "git::ssh://git@github.com/hashicorp-modules/hashistack-aws"
+  source           = "git::ssh://git@github.com/hashicorp-modules/hashistack-aws?ref=ami_filter"
   environment_name = "${random_id.environment_name.hex}"
   cluster_name     = "${random_id.environment_name.hex}"
   cluster_size     = "${var.cluster_size}"
@@ -26,9 +26,6 @@ module "hashistack-aws" {
   ssh_key_name     = "${module.ssh-keypair-aws.ssh_key_name}"
   subnet_ids       = "${module.network-aws.subnet_private_ids}"
   vpc_id           = "${module.network-aws.vpc_id}"
-  consul_version   = "${var.consul_version}"
-  vault_version    = "${var.vault_version}"
-  nomad_version    = "${var.nomad_version}"
   instance_type    = "${var.instance_type}"
 }
 
