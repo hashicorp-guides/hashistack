@@ -37,8 +37,8 @@
 - To access the UIs for Consul and Vault respectively from your local machine (on http://localhost:< port >), you can create the following SSH tunnels:
 
   ```
-  $ ssh -i hashistack-r4nd0m456.pem -L 8200:<hashistack node private ip>:8200 azure-user@<jump host public ip>
-  $ ssh -i hashistack-r4nd0m456.pem -L 8500:<hashistack node private ip>:8500 azure-user@<jump host public ip>
+  $ ssh -i hashistack-r4nd0m456.pem -L 8200:<hashistack node private ip>:8200 ec2-user@<jump host public ip>
+  $ ssh -i hashistack-r4nd0m456.pem -L 8500:<hashistack node private ip>:8500 ec2-user@<jump host public ip>
   ```
 
 ### Limitations noted in the the [hashistack-aws](https://github.com/hashicorp-modules/hashistack-aws) repository
