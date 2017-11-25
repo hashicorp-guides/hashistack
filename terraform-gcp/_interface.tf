@@ -11,10 +11,19 @@ variable "project_name" {
   description = "The project to install into."
 }
 
+variable "image_bucket_name" {
+  description = "The bucket that contains the image.  See hashistack.tf for expected path structure."
+}
+
 # Optional variables
 variable "environment_name_prefix" {
   default     = "hashistack"
   description = "Environment Name prefix eg my-hashistack-env"
+}
+
+variable "environment" {
+  description = "Prod, test, QA, dev, etc"
+  default     = "production"
 }
 
 variable "cluster_size" {
@@ -54,7 +63,7 @@ variable "os_version" {
 }
 
 variable "ssh_user" {
-  default = "gcp-user"
+  default     = "gcp-user"
   description = "The name of the SSH user to provision."
 }
 
@@ -64,19 +73,11 @@ output "network_name" {
 }
 
 output "subnet_public_names" {
-  value = ["${module.network-gcp.subnetwork_public_names}"]
+  value = ["${module.network-gcp.subnet_public_names}"]
 }
 
-output "subnet_private_ids" {
-  value = ["${module.network-gcp.subnetwork_private_names}"]
-}
-
-output "security_group_egress_id" {
-  value = "${module.network-gcp.security_group_egress_id}"
-}
-
-output "security_group_bastion_id" {
-  value = "${module.network-gcp.security_group_bastion_id}"
+output "subnet_private_names" {
+  value = ["${module.network-gcp.subnet_private_names}"]
 }
 
 output "bastion_username" {
@@ -103,10 +104,10 @@ output "hashistack_server_firewall" {
   value = "${module.hashistack-gcp.hashistack_server_firewall}"
 }
 
-output "ssh_key_name" {
-  value = "${module.ssh-keypair-data.ssh_key_name}"
+output "ssh_key" {
+  value = "${module.ssh-keypair-data.private_key_pem}"
 }
 
-output "private_key_data" {
-  value = "${module.ssh-keypair-data.private_key_data}"
+output "ssh_user" {
+  value = "${var.ssh_user}"
 }
