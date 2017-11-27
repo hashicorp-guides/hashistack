@@ -11,8 +11,7 @@ provider "google" {
 }
 
 module "network-gcp" {
-  #source           = "git::ssh://git@github.com/hashicorp-modules/network-gcp"
-  source           = "../../network-gcp"
+  source           = "git::ssh://git@github.com/hashicorp-modules/network-gcp"
   environment_name = "${random_id.environment_name.hex}"
   os               = "${var.os}"
   os_version       = "${var.os_version}"
@@ -21,8 +20,7 @@ module "network-gcp" {
 }
 
 module "hashistack-gcp" {
-  #source           = "git::ssh://git@github.com/hashicorp-modules/hashistack-gcp"
-  source           = "../../hashistack-gcp"
+  source           = "git::ssh://git@github.com/hashicorp-modules/hashistack-gcp"
   region           = "${var.gcp_region}"
   project_name     = "${var.project_name}"
   image_bucket_name = "${var.image_bucket_name}"
@@ -37,8 +35,10 @@ module "hashistack-gcp" {
   os_version       = "${var.os_version}"
   ssh_user         = "${var.ssh_user}"
   ssh_key_data     = "${module.ssh-keypair-data.public_key_data}"
-  #subnet_       = "${module.network-gcp.subnet_private_names}"
-  network          = "${module.network-gcp.network_name}"
+  # Terraform currently does not let you specify a network and subnet which the
+  # Google  API requires.  As such this only works in the default network.
+  #subnet           = "${module.network-gcp.subnet_private_names[0]}"
+  #network          = "${module.network-gcp.network_name}"
   machine_type     = "${var.machine_type}"
   environment      = "${var.environment}"
 }

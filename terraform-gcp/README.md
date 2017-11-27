@@ -1,11 +1,11 @@
 # Build the HashiCorp Stack on AWS
 
-## Usage for `terraform-aws`
-- Set up your AWS credentials locally or on TFE. You may have a file on your local machine like this when you're done:
+## Usage for `terraform-gcp`
+- Set up your gcp credentials locally or on TFE. You may have a file on your local machine like this when you're done:
   ```
-  [default]
-  aws_access_key_id="FAKEFAKEFAKEFAKE"
-  aws_secret_access_key="randomfake308u32nk+j39randomfake"
+  export GOOGLE_CREDENTIALS="/home/username/.gcloud/my-project.json"
+  export GOOGLE_PROJECT="my-project"
+  export GOOGLE_REGION="us-east1"
   ```
 
 - Clone this repository.
@@ -15,7 +15,7 @@
 
 - Change into the correct directory.
   ```
-  $ cd /path/to/hashistack/terraform-aws
+  $ cd /path/to/hashistack/terraform-gcp
   ```
 
 - Make a `terraform.tfvars` file and put in the appropriate variables.
@@ -39,9 +39,9 @@
   $ ssh -i hashistack-r4nd0m456.pem -L 8500:<hashistack node private ip>:8500 ec2-user@<jump host public ip>
   ```
 
-**Note:** I'm outputting the contents of the private key for use (copy/paste) when running on TFE. Comment it out if you want to suppress the output.
+**Note:** Terraform currently does not allow specifying a network name and subnet which the Google API requires.  As such you can only deploy the hashistack instances into a default network and subnet.  This means you cannot use the network created by the network-gcp module.  This restriction is no longer compatible with the Google API, and Terraform needs to be updated to correct this.  Thus this does not work in the same way as the AWS and Azure versions, and is essentially broken at the current time.  But the general structure is here.
 
-### Limitations noted in the the [hashistack-aws](https://github.com/hashicorp-modules/hashistack-aws) repository
+### Limitations noted in the the [hashistack-gcp](https://github.com/hashicorp-modules/hashistack-gcp) repository
 - **This repository is currently being tested.**
 - Vault is not configured to use TLS.
 - Vault is not initialized. Please refer to the [Vault documentation](https://www.vaultproject.io/docs/internals/architecture.html) for instructions.
