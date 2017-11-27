@@ -17,7 +17,7 @@ module "network-aws" {
 }
 
 module "hashistack-aws" {
-  source           = "git::ssh://git@github.com/hashicorp-modules/hashistack-aws?ref=ami_filter"
+  source           = "git::ssh://git@github.com/hashicorp-modules/hashistack-aws"
   environment_name = "${random_id.environment_name.hex}"
   cluster_name     = "${random_id.environment_name.hex}"
   cluster_size     = "${var.cluster_size}"
