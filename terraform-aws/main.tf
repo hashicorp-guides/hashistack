@@ -9,7 +9,7 @@ provider "aws" {
 }
 
 module "network-aws" {
-  source           = "git::ssh://git@github.com/hashicorp-modules/network-aws?ref=0.1.0"
+  source           = "git::ssh://git@github.com/hashicorp-modules/network-aws?ref=fix_ssh_username_lookup_case"
   environment_name = "${random_id.environment_name.hex}"
   os               = "${var.os}"
   os_version       = "${var.os_version}"
