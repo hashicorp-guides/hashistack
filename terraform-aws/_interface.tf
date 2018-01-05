@@ -44,6 +44,10 @@ variable "os_version" {
   description = "Operating System version to use ie 7.3 (for RHEL) or 16.04 (for Ubuntu)"
 }
 
+variable "ssh_key_name" {
+  description = "Name of SSH key populated to nodes. This key must be pre-existing."
+}
+
 ## Outputs
 output "vpc_id" {
   value = "${module.network-aws.vpc_id}"
@@ -85,10 +89,3 @@ output "hashistack_server_sg_id" {
   value = "${module.hashistack-aws.hashistack_server_sg_id}"
 }
 
-output "ssh_key_name" {
-  value = "${module.ssh-keypair-aws.ssh_key_name}"
-}
-
-output "private_key_data" {
-  value = "${module.ssh-keypair-aws.private_key_data}"
-}
